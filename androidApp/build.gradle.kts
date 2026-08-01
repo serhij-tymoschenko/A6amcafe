@@ -52,3 +52,7 @@ android {
         compose = true
     }
 }
+
+dependencies {
+    implementation(libs.koin.android)
+}

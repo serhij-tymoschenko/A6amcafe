@@ -6,6 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C5E8E20030210D7E0041E282 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E1FF30210D7E0041E282 /* FirebaseAnalytics */; };
+		C5E8E20230210D7E0041E282 /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E20130210D7E0041E282 /* FirebaseAuth */; };
+		C5E8E20430210D7E0041E282 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E20330210D7E0041E282 /* FirebaseMessaging */; };
+		C5E8E40530210DCE0041E282 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E40430210DCE0041E282 /* SDWebImage */; };
+		C5E8E40730210DCE0041E282 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E40630210DCE0041E282 /* SDWebImageMapKit */; };
+		C5E8E40A30210E370041E282 /* SDWebImageSVGCoder in Frameworks */ = {isa = PBXBuildFile; productRef = C5E8E40930210E370041E282 /* SDWebImageSVGCoder */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		E54C74F4B622F72617960DAA /* A6amcafe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = A6amcafe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -41,12 +50,26 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5E8E20430210D7E0041E282 /* FirebaseMessaging in Frameworks */,
+				C5E8E40730210DCE0041E282 /* SDWebImageMapKit in Frameworks */,
+				C5E8E20030210D7E0041E282 /* FirebaseAnalytics in Frameworks */,
+				C5E8E40A30210E370041E282 /* SDWebImageSVGCoder in Frameworks */,
+				C5E8E40530210DCE0041E282 /* SDWebImage in Frameworks */,
+				C5E8E20230210D7E0041E282 /* FirebaseAuth in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3B6FF0047A47B2EC924D0367 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				E54C74F4B622F72617960DAA /* A6amcafe.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		4D3E0BCE1C3EB234D4DC4C23 = {
 			isa = PBXGroup;
 			children = (
@@ -54,14 +77,6 @@
 				4F1EB54B3AB9B60B95905F7C /* iosApp */,
 				3B6FF0047A47B2EC924D0367 /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		3B6FF0047A47B2EC924D0367 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				E54C74F4B622F72617960DAA /* A6amcafe.app */,
-			);
-			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -85,6 +100,12 @@
 			);
 			name = iosApp;
 			packageProductDependencies = (
+				C5E8E1FF30210D7E0041E282 /* FirebaseAnalytics */,
+				C5E8E20130210D7E0041E282 /* FirebaseAuth */,
+				C5E8E20330210D7E0041E282 /* FirebaseMessaging */,
+				C5E8E40430210DCE0041E282 /* SDWebImage */,
+				C5E8E40630210DCE0041E282 /* SDWebImageMapKit */,
+				C5E8E40930210E370041E282 /* SDWebImageSVGCoder */,
 			);
 			productName = iosApp;
 			productReference = E54C74F4B622F72617960DAA /* A6amcafe.app */;
@@ -114,6 +135,11 @@
 			);
 			mainGroup = 4D3E0BCE1C3EB234D4DC4C23;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				C5E8E1FE30210D7E0041E282 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				C5E8E40330210DCE0041E282 /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				C5E8E40830210E370041E282 /* XCRemoteSwiftPackageReference "SDWebImageSVGCoder" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3B6FF0047A47B2EC924D0367 /* Products */;
 			projectDirPath = "";
@@ -167,6 +193,62 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
+		4E9111EC0568409B665F5BC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 4833U57JDQ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		7C6D0B390C0452FD739CE72C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
+				DEVELOPMENT_TEAM = 4833U57JDQ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = iosApp/Info.plist;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		9AAE217164D016DEECDF073E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = 58C23F289732E37FF6CB2DFC /* Configuration */;
@@ -290,62 +372,6 @@
 			};
 			name = Release;
 		};
-		4E9111EC0568409B665F5BC0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		7C6D0B390C0452FD739CE72C /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ARCHS = arm64;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_ASSET_PATHS = "\"iosApp/Preview Content\"";
-				DEVELOPMENT_TEAM = "${TEAM_ID}";
-				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iosApp/Info.plist;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -368,6 +394,66 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C5E8E1FE30210D7E0041E282 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.17.0;
+			};
+		};
+		C5E8E40330210DCE0041E282 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.21.7;
+			};
+		};
+		C5E8E40830210E370041E282 /* XCRemoteSwiftPackageReference "SDWebImageSVGCoder" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSVGCoder.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.8.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C5E8E1FF30210D7E0041E282 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E1FE30210D7E0041E282 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		C5E8E20130210D7E0041E282 /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E1FE30210D7E0041E282 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		C5E8E20330210D7E0041E282 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E1FE30210D7E0041E282 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
+		C5E8E40430210DCE0041E282 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E40330210DCE0041E282 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		C5E8E40630210DCE0041E282 /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E40330210DCE0041E282 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
+		C5E8E40930210E370041E282 /* SDWebImageSVGCoder */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C5E8E40830210E370041E282 /* XCRemoteSwiftPackageReference "SDWebImageSVGCoder" */;
+			productName = SDWebImageSVGCoder;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B8182090B15A8DE58AC685D1 /* Project object */;
 }

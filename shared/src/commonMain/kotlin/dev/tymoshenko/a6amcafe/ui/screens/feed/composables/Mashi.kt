@@ -39,7 +39,6 @@ fun Mashi(
             AsyncImage(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .aspectRatio(552 / 736F)
                     .clip(RoundedCornerShape(8)),
                 model = "https://ipfs.filebase.io/ipfs/QmNs1kNe7nG4dJXQStqZpV1W8sE8rFgsmGv9hfFP8kEsTe",
                 contentDescription = null

@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import dev.tymoshenko.a6amcafe.ui.screens.feed.composables.FeedGrid
 import dev.tymoshenko.a6amcafe.ui.screens.feed.composables.Mashi
 import dev.tymoshenko.a6amcafe.ui.theme.greyBackground
 import org.koin.compose.viewmodel.koinViewModel
@@ -34,25 +35,8 @@ fun MashiesFeed() {
     Box(modifier = Modifier.fillMaxSize()
         .background(greyBackground))
 
-    BoxWithConstraints {
-        val itemWidthDp = (maxWidth - 16.dp) / 2 - 8.dp
-
-        LazyVerticalStaggeredGrid(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 8.dp),
-            columns = StaggeredGridCells.Fixed(2),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalItemSpacing = 8.dp,
-            contentPadding = PaddingValues(0.dp),
-        ) {
-            itemsIndexed(items = listOf(1, 2, 3, 4, 5, 7, 56346,346346,346534,3,2,3,3,3,3,3,3,3,3)) { index, item ->
-                // Apply top padding only to the very first left item
-                val topPadding = if (index == 1) 96.dp else 0.dp
-
-                Mashi(modifier = Modifier.padding(top = topPadding).width(itemWidthDp))
-            }
-        }
+    Box {
+        FeedGrid()
     }
 
 

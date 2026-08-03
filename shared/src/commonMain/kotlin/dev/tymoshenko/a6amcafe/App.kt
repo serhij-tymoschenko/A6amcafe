@@ -19,11 +19,13 @@ import org.jetbrains.compose.resources.painterResource
 import a6amcafe.shared.generated.resources.Res
 import a6amcafe.shared.generated.resources.compose_multiplatform
 import dev.tymoshenko.a6amcafe.ui.screens.auth.Auth
+import dev.tymoshenko.a6amcafe.ui.screens.feed.MashiesFeed
+import dev.tymoshenko.a6amcafe.ui.screens.feed.composables.Mashi
 
 @Composable
 @Preview
 fun App() {
     MaterialTheme {
-        Auth()
+        MashiesFeed()
     }
 }

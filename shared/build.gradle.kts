@@ -83,7 +83,6 @@ kotlin {
             implementation(libs.coil.network.ktor3)
 
             // Koin
-
             api(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
@@ -106,6 +105,9 @@ kotlin {
             // Datastore
             implementation(libs.androidx.datastore)
             implementation(libs.androidx.datastore.preferences)
+
+            // Skiko
+            implementation(libs.skiko)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

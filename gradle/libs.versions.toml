@@ -25,6 +25,7 @@ material3 = "1.11.0-alpha07"
 navigationCompose = "2.9.2"
 pagingCompose = "3.5.0"
 room = "2.8.4"
+skiko = "0.150.1"
 sqlite = "2.7.0"
 ksp = "2.3.10"
 
@@ -72,6 +73,7 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 androidx-room-sqlite-wrapper = { module = "androidx.room:room-sqlite-wrapper", version.ref = "room" }
+skiko = { module = "org.jetbrains.skiko:skiko", version.ref = "skiko" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

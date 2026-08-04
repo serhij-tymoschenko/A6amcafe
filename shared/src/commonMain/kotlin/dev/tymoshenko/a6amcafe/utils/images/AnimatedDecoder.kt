@@ -1,8 +1,9 @@
-package fr.outadoc.justchatting.utils.coil
+package dev.tymoshenko.a6amcafe.utils.images
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.setValue
+import coil3.Bitmap
 import coil3.Canvas
 import coil3.Image
 import coil3.ImageLoader
@@ -25,7 +26,7 @@ import org.jetbrains.skia.Canvas as SkiaCanvas
 import org.jetbrains.skia.Image as SkiaImage
 
 @Deprecated("Replace with proper coil3 implementation once available")
-internal class AnimatedImageDecoder(
+internal class AnimatedDecoder(
     private val source: ImageSource,
     private val prerenderFrames: Boolean = false,
 ) : Decoder {
@@ -49,7 +50,7 @@ internal class AnimatedImageDecoder(
             imageLoader: ImageLoader,
         ): Decoder? {
             if (!isGif(result.source.source())) return null
-            return AnimatedImageDecoder(
+            return AnimatedDecoder(
                 source = result.source,
                 prerenderFrames = prerenderFrames
             )
@@ -169,7 +170,7 @@ private class AnimatedSkiaImage(
 
         // Convert Skia Bitmap into a platform-compatible Coil Bitmap/Image
         // On Desktop/Skiko platforms, coil3.Bitmap is org.jetbrains.skia.Bitmap
-        val coilImage = (skiaBitmap as coil3.Bitmap).asImage(shareable = false)
+        val coilImage = (skiaBitmap as Bitmap).asImage(shareable = false)
 
         // Delegate drawing to Coil's BitmapImage implementation
         coilImage.draw(this)

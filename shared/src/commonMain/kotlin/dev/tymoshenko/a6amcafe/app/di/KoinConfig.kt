@@ -14,7 +14,8 @@ fun initKoin(config: KoinAppDeclaration? = null): KoinApplication {
             datastoreModule,
             firebaseModule,
             repoModule,
-            viewModelModule
+            viewModelModule,
+            platformModule
         )
     }
 }

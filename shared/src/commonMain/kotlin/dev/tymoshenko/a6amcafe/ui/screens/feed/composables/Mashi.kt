@@ -25,16 +25,35 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import coil3.compose.LocalPlatformContext
+import coil3.request.ImageRequest
 import dev.tymoshenko.a6amcafe.data.models.mashi.colors.SelectedColors
 import dev.tymoshenko.a6amcafe.ui.theme.creamBackground
 import dev.tymoshenko.a6amcafe.utils.images.SvgHelper
+import dev.tymoshenko.a6amcafe.utils.platform.PlatformType
+import dev.tymoshenko.a6amcafe.utils.images.AnimatedSkiaImageDecoder
+import org.koin.compose.koinInject
 
 @Composable
 fun Mashi(
     modifier: Modifier = Modifier
 ) {
+    val platformType = koinInject<PlatformType>()
+    val ctx = LocalPlatformContext.current
+
     var model by remember {
         mutableStateOf<ImageBitmap?>(null)
+    }
+
+    val req = when (platformType) {
+        PlatformType.IOS -> ImageRequest.Builder(ctx)
+            .data("https://katzemon.com/api/apng/QmVDo7RbmGZy8wXBwKdtYy2cFUkGq1FXqD1SPdqF5bv4rt")
+            .decoderFactory(AnimatedSkiaImageDecoder.Factory())
+            .build()
+
+        else -> ImageRequest.Builder(ctx)
+            .data("https://round-peach-hippopotamus.myfilebase.com/ipfs/QmVDo7RbmGZy8wXBwKdtYy2cFUkGq1FXqD1SPdqF5bv4rt")
+            .build()
     }
 
     LaunchedEffect(Unit) {
@@ -51,12 +70,16 @@ fun Mashi(
             .padding(4.dp)
     ) {
         Column {
-            Box {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(552 / 736F)
+            ) {
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxWidth()
                         .aspectRatio(552 / 736F),
-                    model = "https://round-peach-hippopotamus.myfilebase.com/ipfs/QmPCaPuKA4Q6JZ96B2jnK58Y8rfz1Hdkv4G4ovcR5s8Hko",
+                    model = req,
                     contentDescription = null
                 )
 

@@ -7,7 +7,7 @@ class SvgHelperIosImpl: SvgProvider {
     func getSvg(
         imageUrl: String,
         colors: SelectedColors,
-        onReady: @escaping ((any Gradle__org_jetbrains_compose_ui_ui_graphics_iosarm64_1_11_1ImageBitmap)?) -> Void
+        onReady: @escaping (Shared?) -> Void
     ) {
         Task {
             // 1. Validate URL
@@ -39,7 +39,7 @@ class SvgHelperIosImpl: SvgProvider {
             guard !Task.isCancelled else { return }
 
             await MainActor.run {
-                onReady(SvgConverter.companion.toComposeImageBitmap(image: uiImage))
+                onReady(SvgConverter().toComposeImageBitmap(image: uiImage))
             }
         }
     }

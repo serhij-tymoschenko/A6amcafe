@@ -40,9 +40,9 @@ fun MashiesFeed() {
     val modalState = rememberModalBottomSheetState(true)
     val scope = rememberCoroutineScope()
 
-    LaunchedEffect(Unit) {
-        modalState.show()
-    }
+//    LaunchedEffect(Unit) {
+//        modalState.show()
+//    }
 
     Box(modifier = Modifier.fillMaxSize()
         .background(greyBackground))
@@ -51,12 +51,12 @@ fun MashiesFeed() {
         FeedGrid()
     }
 
-    PostModal(
-        modifier = Modifier,
-        state = modalState,
-        onDismiss = {},
-        scope = scope
-    )
+//    PostModal(
+//        modifier = Modifier,
+//        state = modalState,
+//        onDismiss = {},
+//        scope = scope
+//    )
 
 
 //    LazyColumn {

@@ -2,12 +2,12 @@ import Foundation
 import UIKit
 import Shared
 
-class SvgHelperIosImpl: SvgProvider {
+class SvgHelperIosImpl: SvgIosProvider {
 
     func getSvg(
         imageUrl: String,
         colors: SelectedColors,
-        onReady: @escaping (Shared?) -> Void
+        onReady: @escaping (UIImage?) -> Void
     ) {
         Task {
             // 1. Validate URL
@@ -39,7 +39,7 @@ class SvgHelperIosImpl: SvgProvider {
             guard !Task.isCancelled else { return }
 
             await MainActor.run {
-                onReady(SvgConverter().toComposeImageBitmap(image: uiImage))
+                onReady(uiImage)
             }
         }
     }

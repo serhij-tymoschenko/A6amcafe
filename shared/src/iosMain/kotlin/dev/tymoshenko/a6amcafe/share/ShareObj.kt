@@ -1,12 +1,10 @@
 package dev.tymoshenko.a6amcafe.share
 
-import dev.tymoshenko.a6amcafe.utils.images.SvgProvider
-
 object ShareObj {
-    lateinit var svgHelper: SvgProvider
+    lateinit var svgHelper: SvgIosProvider
         private set
 
-    fun setSvgHelper(provider: SvgProvider) {
+    fun setSvgHelper(provider: SvgIosProvider) {
         svgHelper = provider
     }
 }

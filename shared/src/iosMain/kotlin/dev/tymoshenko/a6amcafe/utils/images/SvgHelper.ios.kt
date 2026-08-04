@@ -14,27 +14,27 @@ import platform.posix.memcpy
 
 actual class SvgHelper : SvgProvider {
 
-    override fun getSvg(imageUrl: String, colors: SelectedColors, onReady: (ImageBitmap?) -> Unit) {
+    actual override fun getSvg(imageUrl: String, colors: SelectedColors, onReady: (ImageBitmap?) -> Unit) {
         ShareObj.svgHelper.getSvg(
             imageUrl = imageUrl,
             colors = colors,
-            onReady = onReady
+            onReady = { uiImage ->
+                onReady.invoke(uiImage?.toComposeImageBitmap())
+            }
         )
     }
 }
 
-class SvgConverter {
-    @OptIn(ExperimentalForeignApi::class)
-    fun toComposeImageBitmap(image: UIImage): ImageBitmap? {
-        val nsData = UIImagePNGRepresentation(image) ?: return null
-        if (nsData.length.toInt() == 0) return null
+@OptIn(ExperimentalForeignApi::class)
+fun UIImage.toComposeImageBitmap(): ImageBitmap? {
+    val nsData = UIImagePNGRepresentation(this) ?: return null
+    if (nsData.length.toInt() == 0) return null
 
-        val bytes = ByteArray(nsData.length.toInt())
-        bytes.usePinned { pinned ->
-            memcpy(pinned.addressOf(0), nsData.bytes, nsData.length)
-        }
-
-        return Image.makeFromEncoded(bytes).toComposeImageBitmap()
+    val bytes = ByteArray(nsData.length.toInt())
+    bytes.usePinned { pinned ->
+        memcpy(pinned.addressOf(0), nsData.bytes, nsData.length)
     }
+
+    return Image.makeFromEncoded(bytes).toComposeImageBitmap()
 }
 

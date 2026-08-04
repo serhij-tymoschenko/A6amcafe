@@ -7,7 +7,7 @@ import Shared
 
 class ShareHelper: ShareProvider {
 
-    func getSvgHelper() -> any SvgProvider {
+    func getSvgHelper() -> any SvgIosProvider {
         SvgHelperIosImpl.init()
     }
 }

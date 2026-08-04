@@ -1,5 +1,3 @@
-import jdk.internal.agent.ConnectorAddressLink.export
-import org.gradle.kotlin.dsl.provider.inClassPathMode
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -20,8 +18,6 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "Shared"
             isStatic = true
-
-            export(libs.compose.ui)
         }
     }
 
@@ -65,7 +61,7 @@ kotlin {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
             implementation(libs.compose.material3)
-            api(libs.compose.ui)
+            implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)

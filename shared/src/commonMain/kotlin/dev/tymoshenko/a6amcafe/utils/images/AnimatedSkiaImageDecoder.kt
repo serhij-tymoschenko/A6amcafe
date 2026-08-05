@@ -15,7 +15,6 @@ import okio.BufferedSource
 import okio.ByteString.Companion.encodeUtf8
 import okio.ByteString.Companion.toByteString
 import okio.use
-import org.jetbrains.skia.AnimationFrameInfo
 import org.jetbrains.skia.Bitmap
 import org.jetbrains.skia.Codec
 import org.jetbrains.skia.ColorAlphaType
@@ -60,12 +59,23 @@ internal class AnimatedSkiaImageDecoder(
     }
 }
 
+/**
+ * Above this many decoded bytes we refuse to eagerly pre-render every frame,
+ * even if the caller asked for it. iOS does not have a generous JVM-style heap:
+ * a large GIF/APNG fully decoded frame-by-frame can spike RSS enough to trigger
+ * a jetsam kill. Lazily decoding + caching on first use keeps peak memory bounded
+ * by "frames actually shown" instead of "frames that exist".
+ */
+private const val MAX_EAGER_PRERENDER_BYTES = 24L * 1024 * 1024 // 24 MB
+
 private class AnimatedSkiaImage(
     private val codec: Codec,
     prerenderFrames: Boolean,
 ) : Image {
     private val imageInfo = ImageInfo(
         colorInfo = ColorInfo(
+            // BGRA_8888 is Metal's native little-endian surface format on iOS, so this
+            // frame buffer can be uploaded/drawn without an extra swizzle - keep as-is.
             colorType = ColorType.BGRA_8888,
             alphaType = ColorAlphaType.UNPREMUL,
             colorSpace = ColorSpace.sRGB,
@@ -74,9 +84,44 @@ private class AnimatedSkiaImage(
         height = codec.height,
     )
 
-    private val bitmap = Bitmap().apply { allocPixels(codec.imageInfo) }
-    private val frames = Array(codec.frameCount) { index ->
-        if (prerenderFrames) decodeFrame(index) else null
+    // Single reusable scratch bitmap for decoding - avoids allocating a native
+    // pixel buffer per frame. Its contents are copied out (see decodeFrame)
+    // before being reused, so it's safe to overwrite on every frame.
+    private val scratchBitmap = Bitmap().apply { allocPixels(codec.imageInfo) }
+
+    // Cache fully-built Skia Images (not raw bytes). Building an Image from raw
+    // bytes via makeRaster() is itself a real cost (native alloc + potential
+    // texture upload on first draw). Without this cache, draw() rebuilt a new
+    // Image every single call - including every frame while paused/frozen on
+    // the last frame - which is wasted native work on every composition pass.
+    private val frameCache = arrayOfNulls<SkiaImage>(codec.frameCount)
+
+    // Precompute frame durations once as a primitive IntArray + prefix-sum table.
+    // The old implementation walked codec.framesInfo (a boxed list of
+    // AnimationFrameInfo, iterated via withIndex()) inside draw() on every single
+    // frame of every animation - i.e. on every vsync while animating. That's an
+    // iterator + IndexedValue allocation per redraw. Precomputing once removes
+    // all per-draw allocation from the hot loop.
+    private val frameDurations = IntArray(codec.frameCount) { i ->
+        codec.framesInfo[i].duration.let { if (it <= 0) DEFAULT_FRAME_DURATION else it }
+    }
+    private val cumulativeDurations = IntArray(codec.frameCount).also { cum ->
+        var acc = 0
+        for (i in frameDurations.indices) {
+            cum[i] = acc
+            acc += frameDurations[i]
+        }
+    }
+    private val totalDuration = frameDurations.sum()
+
+    init {
+        val estimatedFullSize = imageInfo.computeMinByteSize().toLong() * codec.frameCount
+        if (prerenderFrames && estimatedFullSize in 1..MAX_EAGER_PRERENDER_BYTES) {
+            for (index in 0 until codec.frameCount) {
+                frameCache[index] = decodeFrame(index)
+            }
+        }
+        // else: fall back to lazy decode-on-first-draw, capped by MAX_EAGER_PRERENDER_BYTES.
     }
 
     private var invalidateTick by mutableIntStateOf(0)
@@ -90,35 +135,24 @@ private class AnimatedSkiaImage(
         get() {
             var size = codec.imageInfo.computeMinByteSize().toLong()
             if (size <= 0L) {
-                // Estimate 4 bytes per pixel.
                 size = 4L * codec.width * codec.height
             }
             return size.coerceAtLeast(0)
         }
 
-    override val width: Int
-        get() = codec.width
-
-    override val height: Int
-        get() = codec.height
-
-    override val shareable: Boolean
-        get() = false
+    override val width: Int get() = codec.width
+    override val height: Int get() = codec.height
+    override val shareable: Boolean get() = false
 
     override fun draw(canvas: Canvas) {
-        if (codec.frameCount == 0) {
-            // The image is empty, nothing to draw.
-            return
-        }
+        if (codec.frameCount == 0) return
 
         if (codec.frameCount == 1) {
-            // This is a static image, simply draw it.
             canvas.drawFrame(0)
             return
         }
 
         if (isAnimationComplete) {
-            // The animation is complete, freeze on the last frame.
             canvas.drawFrame(lastDrawnFrameIndex)
             return
         }
@@ -127,70 +161,59 @@ private class AnimatedSkiaImage(
             ?: TimeSource.Monotonic.markNow().also { currentRepetitionStartTime = it }
         val elapsedTime = startTime.elapsedNow().inWholeMilliseconds
 
-        var accumulatedDuration = 0
+        // Binary-free linear scan over a primitive IntArray - no boxing, no
+        // iterator object, cache-friendly. (Frame counts here are small enough
+        // that a linear scan beats the complexity of a binary search; the point
+        // is avoiding allocation, not algorithmic complexity.)
         var frameIndexToDraw = codec.frameCount - 1
-
-        // Find the right frame to draw based on the elapsed time.
-        for ((index, frame) in codec.framesInfo.withIndex()) {
-            if (accumulatedDuration > elapsedTime) {
+        for (index in cumulativeDurations.indices) {
+            if (cumulativeDurations[index] > elapsedTime) {
                 frameIndexToDraw = (index - 1).coerceAtLeast(0)
                 break
             }
-
-            accumulatedDuration += frame.safeFrameDuration
         }
 
-        // Remember the last frame we drew; the next time we draw, we'll start from here.
         lastDrawnFrameIndex = frameIndexToDraw
 
-        // Check if we've reached the last frame of the last repetition. If so, we're done.
         isAnimationComplete = codec.repetitionCount in 1..currentRepetitionCount &&
                 frameIndexToDraw == (codec.frameCount - 1)
 
         canvas.drawFrame(frameIndexToDraw)
 
-        // We still need to wait for the last frame's duration before we start with the next repetition.
         val drewLastFrame = frameIndexToDraw == codec.frameCount - 1
-        val lastFrameDuration = codec.framesInfo[frameIndexToDraw].safeFrameDuration
-        val hasLastFrameDurationElapsed = elapsedTime >= accumulatedDuration + lastFrameDuration
+        val hasLastFrameDurationElapsed = elapsedTime >= totalDuration
 
         if (!isAnimationComplete && drewLastFrame && hasLastFrameDurationElapsed) {
-            // We've reached the last frame of the current repetition, but we can still loop.
-            // Reset the state and start over from the first frame.
             lastDrawnFrameIndex = 0
             currentRepetitionCount++
             currentRepetitionStartTime = null
         }
 
         if (!isAnimationComplete) {
-            // Increment this value to force the image to be redrawn.
             invalidateTick++
         }
     }
 
-    private fun decodeFrame(frameIndex: Int): ByteArray {
-        codec.readPixels(bitmap, frameIndex)
-        return bitmap.readPixels(imageInfo, imageInfo.minRowBytes)!!
+    /** Decodes [frameIndex] into the shared scratch bitmap, copies the pixels out
+     *  into an independent buffer, and builds a standalone [SkiaImage] from that
+     *  copy. The copy is required because scratchBitmap is reused for every
+     *  frame - but we now build the SkiaImage exactly once per frame and cache
+     *  it, rather than rebuilding it on every draw() call. */
+    private fun decodeFrame(frameIndex: Int): SkiaImage {
+        codec.readPixels(scratchBitmap, frameIndex)
+        val bytes = scratchBitmap.readPixels(imageInfo, imageInfo.minRowBytes)!!
+        return SkiaImage.makeRaster(
+            imageInfo = imageInfo,
+            bytes = bytes,
+            rowBytes = imageInfo.minRowBytes,
+        )
     }
 
     private fun Canvas.drawFrame(frameIndex: Int) {
-        val frame = frames[frameIndex] ?: decodeFrame(frameIndex).also { frames[frameIndex] = it }
-        drawImage(
-            image = SkiaImage.makeRaster(
-                imageInfo = imageInfo,
-                bytes = frame,
-                rowBytes = imageInfo.minRowBytes,
-            ),
-            left = 0f,
-            top = 0f,
-        )
+        val image = frameCache[frameIndex] ?: decodeFrame(frameIndex).also { frameCache[frameIndex] = it }
+        drawImage(image = image, left = 0f, top = 0f)
     }
 }
-
-private val AnimationFrameInfo.safeFrameDuration: Int
-    get() = duration.let { if (it <= 0) DEFAULT_FRAME_DURATION else it }
-
-private const val DEFAULT_FRAME_DURATION = 100
 
 // GIF Headers
 private val GIF_HEADER_87A = "GIF87a".encodeUtf8()
@@ -205,10 +228,8 @@ private val PNG_HEADER = byteArrayOf(
     0x89.toByte(), 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A
 ).toByteString()
 
-/**
- * Checks if the [source] contains a supported animated image format (GIF, WebP, PNG/APNG).
- * Uses [BufferedSource.peek] so the source stream buffer position remains unconsumed.
- */
+private const val DEFAULT_FRAME_DURATION = 100
+
 private fun isSupportedFormat(source: BufferedSource): Boolean {
     val peek = source.peek()
     return isGif(peek) || isWebP(peek) || isPng(peek)
